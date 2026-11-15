@@ -829,3 +829,103 @@ export async function POST() {
 
   return NextResponse.json({ url: session.url });
 }
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(request: Request) {
+  const signature = request.headers.get("stripe-signature");
+
+  if (!signature) {
+    return NextResponse.json({ error: "Missing Stripe signature." }, { status: 400 });
+  }
+
+  try {
+    const body = await request.text();
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+
+    if (
+      event.type === "checkout.session.completed" ||
+      event.type === "customer.subscription.updated" ||
+      event.type === "customer.subscription.deleted"
+    ) {
+      const object = event.data.object as Stripe.Checkout.Session | Stripe.Subscription;
+
+      let subscription: Stripe.Subscription;
+      let userId: string | null = null;
+      let customerId: string | null = null;
+      let email: string | null = null;
+
+      if (object.object === "checkout.session") {
+        const session = object as Stripe.Checkout.Session;
+        userId = session.client_reference_id || null;
+        customerId =
+          typeof session.customer === "string"
+            ? session.customer
+            : session.customer?.id || null;
+        email = session.customer_details?.email || null;
+
+        if (session.subscription) {
+          subscription = await stripe.subscriptions.retrieve(
+            session.subscription as string
+          );
+        } else {
+          return NextResponse.json({ received: true });
+        }
+      } else {
+        subscription = object as Stripe.Subscription;
+        userId = subscription.metadata.userId || null;
+        customerId =
+          typeof subscription.customer === "string"
+            ? subscription.customer
+            : subscription.customer?.id || null;
+      }
+
+      if (userId) {
+        await supabaseAdmin.from("profiles").upsert(
+          {
+            id: userId,
+            email: email || undefined,
+            stripe_customer_id: customerId,
+          },
+          { onConflict: "id" }
+        );
+
+        await supabaseAdmin.from("subscriptions").upsert(
+          {
+            user_id: userId,
+            stripe_subscription_id: subscription.id,
+            status: subscription.status,
+            price_id: subscription.items.data[0]?.price.id || null,
+            current_period_end: subscription.current_period_end
+              ? new Date(subscription.current_period_end * 1000).toISOString()
+              : null,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id" }
+        );
+      }
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return NextResponse.json(
+      { error: "Invalid webhook signature." },
+      { status: 400 }
+    );
+  }
+}
