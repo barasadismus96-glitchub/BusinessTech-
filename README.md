@@ -105,3 +105,8 @@ module.exports = {
 // NOTE: This file should not be edited.
 
 http://localhost:3000
+
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited.
