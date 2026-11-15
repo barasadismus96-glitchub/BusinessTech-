@@ -66,3 +66,36 @@ module.exports = {
     autoprefixer: {},
   },
 }; 
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        btech: {
+          50: '#f5f7ff',
+          100: '#ebf0ff',
+          200: '#d9e4ff',
+          300: '#bdd0ff',
+          400: '#8ea7ff',
+          500: '#6a7dff',
+          600: '#4f64f0',
+          700: '#3f4ec9',
+          800: '#313f9d',
+          900: '#2f3a7c',
+        },
+      },
+      boxShadow: {
+        glow: '0 18px 50px rgba(108, 128, 255, 0.24)',
+      },
+      backgroundImage: {
+        radar: 'radial-gradient(circle at top, rgba(108,128,255,0.20), rgba(15,23,42,0) 42%)',
+      },
+    },
+  },
+  plugins: [],
+};
