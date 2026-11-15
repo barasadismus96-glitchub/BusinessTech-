@@ -34,6 +34,7 @@ Iam creating a well equipped business tool which will be Ai molded to serve busi
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./*"]
