@@ -1100,3 +1100,8 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 STRIPE_SECRET_KEY=sk_test_your_key
 STRIPE_WEBHOOK_SECRET=whsec_your_key
 STRIPE_PRICE_ID=price_your_price_id
+import Stripe from "stripe";
+
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
