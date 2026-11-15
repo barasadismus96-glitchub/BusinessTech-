@@ -1111,3 +1111,27 @@ export const supabaseBrowserClient = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+# B/STech
+
+B/STech is a SaaS-style AI marketing platform for startups, agencies, and growing businesses. It helps users create marketing briefs, ad copy, social posts, and email drafts from a simple campaign form.
+
+## Features
+- AI-powered marketing generator
+- Landing page with pricing and CTA sections
+- Marketing studio form
+- Dashboard and pricing pages
+- Stripe-ready and Supabase-ready foundation
+
+## Stack
+- Next.js
+- TypeScript
+- Tailwind CSS
+- OpenAI API
+- Stripe
+- Supabase
+
+## Local setup
+
+1. Install dependencies:
+```bash
+npm install
