@@ -145,3 +145,18 @@ select,
 button {
   font: inherit;
 }
+export type CampaignForm = {
+  businessName: string;
+  description: string;
+  audience: string;
+  tone: string;
+  platform: string;
+  objective: string;
+};
+
+export type GeneratedCampaign = {
+  summary: string;
+  socialPost: string;
+  adCopy: string;
+  emailDraft: string;
+};
