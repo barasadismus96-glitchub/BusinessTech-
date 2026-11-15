@@ -1136,3 +1136,4 @@ B/STech is a SaaS-style AI marketing platform for startups, agencies, and growin
 ```bash
 npm install
 cp .env.example .env.local
+npm run dev
