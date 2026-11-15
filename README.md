@@ -973,3 +973,59 @@ for update using ((select auth.uid()) = user_id);
 create policy "Users can manage own campaigns" on public.campaigns
 for all using ((select auth.uid()) = user_id)
 with check ((select auth.uid()) = user_id);
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export default async function DashboardPage() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    redirect("/login");
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-950 px-6 py-16 text-white lg:px-10">
+      <div className="mx-auto max-w-6xl">
+        <h1 className="text-4xl font-black tracking-tight">Dashboard</h1>
+        <p className="mt-2 text-slate-400">Welcome back, {user.email}.</p>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">Campaigns</p>
+            <p className="mt-3 text-3xl font-black text-white">42</p>
+          </div>
+          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">Leads generated</p>
+            <p className="mt-3 text-3xl font-black text-white">1,284</p>
+          </div>
+          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+            <p className="text-sm text-slate-400">Avg. engagement</p>
+            <p className="mt-3 text-3xl font-black text-white">7.9%</p>
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900 p-6">
+          <h2 className="text-xl font-bold">Recent campaigns</h2>
+          <div className="mt-4 space-y-4">
+            {[
+              "Spring launch recap",
+              "Local service lead campaign",
+              "Brand refresh creative sprint",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-slate-800 bg-slate-950 p-4 text-slate-200"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
