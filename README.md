@@ -53,3 +53,9 @@ Iam creating a well equipped business tool which will be Ai molded to serve busi
     "typescript": "^5.5.4"
   }
 }
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+};
+
+export default nextConfig; 
