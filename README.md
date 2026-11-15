@@ -1138,3 +1138,4 @@ npm install
 cp .env.example .env.local
 npm run dev
 http://localhost:3000
+OPENAI_API_KEY=your_key_here
