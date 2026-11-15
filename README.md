@@ -1089,3 +1089,14 @@ export default function SignUpPage() {
     </main>
   );
 }
+OPENAI_API_KEY=your_openai_api_key_here
+NEXT_PUBLIC_APP_NAME=B/STech
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+STRIPE_SECRET_KEY=sk_test_your_key
+STRIPE_WEBHOOK_SECRET=whsec_your_key
+STRIPE_PRICE_ID=price_your_price_id
