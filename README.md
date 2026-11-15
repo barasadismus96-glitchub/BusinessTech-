@@ -929,3 +929,47 @@ export async function POST(request: Request) {
     );
   }
 }
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text,
+  stripe_customer_id text,
+  created_at timestamptz not null default now()
+);
+
+create table public.subscriptions (
+  user_id uuid primary key references public.profiles(id) on delete cascade,
+  stripe_subscription_id text unique,
+  status text not null default 'inactive',
+  price_id text,
+  current_period_end timestamptz,
+  updated_at timestamptz not null default now()
+);
+
+create table public.campaigns (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  business_name text not null,
+  brief jsonb not null,
+  content jsonb not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+alter table public.subscriptions enable row level security;
+alter table public.campaigns enable row level security;
+
+create policy "Users can view own profile" on public.profiles
+for select using ((select auth.uid()) = id);
+
+create policy "Users can update own profile" on public.profiles
+for update using ((select auth.uid()) = id);
+
+create policy "Users can view own subscription" on public.subscriptions
+for select using ((select auth.uid()) = user_id);
+
+create policy "Users can update own subscription" on public.subscriptions
+for update using ((select auth.uid()) = user_id);
+
+create policy "Users can manage own campaigns" on public.campaigns
+for all using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);
