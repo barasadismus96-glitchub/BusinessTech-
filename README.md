@@ -737,3 +737,25 @@ export default function HomePage() {
     </main>
   );
 }
+# B/STech
+
+B/STech is a SaaS-style AI marketing platform for startups, agencies, and growing businesses. It helps users create marketing briefs, ad copy, social posts, and email drafts from a simple campaign form.
+
+## Features
+- AI-powered marketing generator
+- Landing page with pricing and CTA sections
+- Marketing studio form
+- Campaign history in browser storage
+- Demo fallback when no OpenAI key is configured
+
+## Stack
+- Next.js
+- TypeScript
+- Tailwind CSS
+- OpenAI API (optional)
+
+## Local setup
+
+1. Install dependencies:
+```bash
+npm install
