@@ -449,3 +449,70 @@ export default function MarketingStudio() {
     </div>
   );
 }
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { generateMarketingContent } from '@/lib/generate-content';
+import type { CampaignForm } from '@/lib/types';
+
+export async function POST(request: Request) {
+  try {
+    const body: CampaignForm = await request.json();
+
+    if (!body.businessName || !body.description) {
+      return NextResponse.json(
+        { error: 'Business name and description are required.' },
+        { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (apiKey) {
+      const openai = new OpenAI({ apiKey });
+
+      const prompt = `
+        Create a short marketing campaign for this business.
+        Business name: ${body.businessName}
+        Description: ${body.description}
+        Audience: ${body.audience || 'modern buyers'}
+        Tone: ${body.tone || 'friendly and persuasive'}
+        Platform: ${body.platform || 'Instagram'}
+        Objective: ${body.objective || 'increase engagement'}
+
+        Return valid JSON with keys: summary, socialPost, adCopy, emailDraft.
+      `;
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        temperature: 0.8,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a creative marketing strategist. Return valid JSON only.',
+          },
+          { role: 'user', content: prompt },
+        ],
+      });
+
+      const content = completion.choices?.[0]?.message?.content || '{}';
+      const parsed = JSON.parse(content);
+
+      return NextResponse.json({
+        summary:
+          parsed.summary ||
+          `Campaign for ${body.businessName} across ${body.platform || 'digital channels'}.`,
+        socialPost: parsed.socialPost || generateMarketingContent(body).socialPost,
+        adCopy: parsed.adCopy || generateMarketingContent(body).adCopy,
+        emailDraft: parsed.emailDraft || generateMarketingContent(body).emailDraft,
+      });
+    }
+
+    return NextResponse.json(generateMarketingContent(body));
+  } catch (error) {
+    console.error('Generate API error:', error);
+    return NextResponse.json(
+      { error: 'Something went wrong while generating content.' },
+      { status: 500 }
+    );
+  }
+}
