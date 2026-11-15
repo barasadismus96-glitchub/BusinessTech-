@@ -160,3 +160,53 @@ export type GeneratedCampaign = {
   adCopy: string;
   emailDraft: string;
 };
+import type { CampaignForm, GeneratedCampaign } from './types';
+
+export function generateMarketingContent(form: CampaignForm): GeneratedCampaign {
+  const businessName = form.businessName || 'Your business';
+  const description =
+    form.description || 'high-quality solutions that help customers grow faster';
+  const audience = form.audience || 'modern buyers';
+  const tone = form.tone || 'friendly and persuasive';
+  const platform = form.platform || 'Instagram';
+  const objective = form.objective || 'increase sales and customer trust';
+
+  return {
+    summary: `${businessName} helps ${audience} by delivering ${description}. The campaign is designed with a ${tone} voice and optimized for ${platform} to achieve ${objective}.`,
+    socialPost: `🚀 ${businessName} is here to help you ${objective}.
+
+${description.charAt(0).toUpperCase() + description.slice(1)} for ${audience} who want smarter, faster, better results.
+
+✨ Why people choose us:
+• Proven value
+• Fast execution
+• Clear, confident messaging
+
+Ready to grow? DM us today or visit our website.
+
+#${businessName.replace(/\s+/g, '').toLowerCase()} #${platform
+      .toLowerCase()
+      .replace(/\s+/g, '')} #businessgrowth #smallbusiness`,
+    adCopy: `Headline: ${businessName} Helps ${audience} Grow Faster
+
+Subheadline: Turn your next idea into measurable momentum.
+
+Body: Get strategic support for ${description}. We help brands build trust, attract attention, and convert more customers with a clear and effective marketing plan.
+
+CTA: Book a free strategy call today.`,
+    emailDraft: `Subject: Grow your business with ${businessName}
+
+Hi there,
+
+If you are looking to ${objective}, ${businessName} is here to help.
+
+We create ${description} that help ${audience} move from interest to action with clear messaging and practical strategy.
+
+Whether you are launching a new offer or refreshing your brand presence, we can help you build momentum.
+
+Let’s talk about your next growth opportunity.
+
+Best,
+The ${businessName} Team`,
+  };
+}
