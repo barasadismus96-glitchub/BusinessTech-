@@ -516,3 +516,224 @@ export async function POST(request: Request) {
     );
   }
 }
+import MarketingStudio from '@/components/MarketingStudio';
+
+const featureCards = [
+  {
+    title: 'Campaign briefs',
+    body: 'Turn raw business context into useful strategy, goals, and positioning.',
+  },
+  {
+    title: 'AI content factory',
+    body: 'Generate social posts, ads, email drafts, and launch copy in one workflow.',
+  },
+  {
+    title: 'Campaign archive',
+    body: 'Save your best ideas, iterate on them, and reuse winning campaigns quickly.',
+  },
+];
+
+const plans = [
+  {
+    name: 'Starter',
+    price: '$19',
+    period: '/month',
+    features: ['10 AI campaigns', 'Social content creator', 'History and saved drafts'],
+  },
+  {
+    name: 'Growth',
+    price: '$49',
+    period: '/month',
+    features: ['Unlimited campaigns', 'Ad + email generation', 'Multi-brand workspaces'],
+    featured: true,
+  },
+  {
+    name: 'Scale',
+    price: 'Custom',
+    period: 'Enterprise',
+    features: ['Brand guidelines', 'API access', 'Priority support'],
+  },
+];
+
+export default function HomePage() {
+  return (
+    <main className="min-h-screen bg-slate-950 text-white">
+      <div className="bg-radar">
+        <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-10">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-btech-500 to-btech-700 text-lg font-black text-white shadow-glow">
+              B
+            </div>
+            <div>
+              <p className="text-xl font-black tracking-tight">B/STech</p>
+              <p className="text-xs uppercase tracking-[0.22em] text-slate-400">
+                AI marketing engine
+              </p>
+            </div>
+          </div>
+
+          <nav className="hidden items-center gap-8 text-sm text-slate-300 md:flex">
+            <a href="#features" className="transition hover:text-white">Features</a>
+            <a href="#studio" className="transition hover:text-white">Studio</a>
+            <a href="#pricing" className="transition hover:text-white">Pricing</a>
+          </nav>
+
+          <a
+            href="#studio"
+            className="rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:border-btech-500 hover:text-btech-200"
+          >
+            Launch campaign
+          </a>
+        </header>
+
+        <section className="mx-auto grid max-w-7xl gap-10 px-6 pb-16 pt-10 lg:grid-cols-[1.2fr_0.8fr] lg:px-10 lg:pb-24 lg:pt-16">
+          <div className="space-y-8">
+            <div className="inline-flex items-center rounded-full border border-btech-500/30 bg-btech-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-btech-200">
+              built for modern brands
+            </div>
+
+            <div className="space-y-5">
+              <h1 className="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Turn your business idea into a full marketing campaign.
+              </h1>
+              <p className="max-w-xl text-lg text-slate-300">
+                B/STech helps startups, agencies, and founders create campaign strategy,
+                ads, and content in minutes using AI-powered workflows.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="#studio"
+                className="rounded-full bg-btech-500 px-6 py-3 text-sm font-semibold text-white shadow-glow transition hover:bg-btech-400"
+              >
+                Generate content
+              </a>
+              <a
+                href="#features"
+                className="rounded-full border border-slate-700 bg-slate-900 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
+              >
+                Explore features
+              </a>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+                <p className="text-2xl font-black text-white">3x</p>
+                <p className="text-sm text-slate-400">Faster campaign output</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+                <p className="text-2xl font-black text-white">18+</p>
+                <p className="text-sm text-slate-400">Marketing templates</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4">
+                <p className="text-2xl font-black text-white">24/7</p>
+                <p className="text-sm text-slate-400">Creative coverage</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-slate-800 bg-slate-900/90 p-6 shadow-glow backdrop-blur-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-btech-200">
+              Growth snapshot
+            </p>
+            <div className="mt-6 space-y-4">
+              <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+                <p className="text-sm text-slate-400">Use case</p>
+                <p className="mt-1 font-semibold text-white">Local business growth</p>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+                <p className="text-sm text-slate-400">Main goal</p>
+                <p className="mt-1 font-semibold text-white">
+                  Increase leads and conversions
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+                <p className="text-sm text-slate-400">Best channels</p>
+                <p className="mt-1 font-semibold text-white">
+                  Instagram, search, email
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section id="features" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+            Features
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Built for ambitious businesses and lean teams
+          </h2>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {featureCards.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-3xl border border-slate-800 bg-slate-900 p-6"
+            >
+              <div className="mb-4 inline-flex rounded-2xl bg-btech-500/15 p-3 text-xl text-btech-200">
+                ✦
+              </div>
+              <h3 className="text-xl font-bold text-white">{item.title}</h3>
+              <p className="mt-3 text-slate-300">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="studio" className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
+        <MarketingStudio />
+      </section>
+
+      <section id="pricing" className="mx-auto max-w-7xl px-6 pb-20 lg:px-10">
+        <div className="mb-10 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+            Plans
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Flexible pricing for growing brands
+          </h2>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
+              className={
+                plan.featured
+                  ? 'rounded-3xl border border-btech-500 bg-btech-500/10 p-6 shadow-glow'
+                  : 'rounded-3xl border border-slate-800 bg-slate-900 p-6'
+              }
+            >
+              <p className="text-sm uppercase tracking-[0.26em] text-slate-400">
+                {plan.name}
+              </p>
+              <p className="mt-4 text-4xl font-black text-white">{plan.price}</p>
+              <p className="mt-2 text-slate-400">{plan.period}</p>
+              <ul className="mt-6 space-y-3 text-slate-300">
+                {plan.features.map((feature) => (
+                  <li key={feature}>• {feature}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className="border-t border-slate-800 bg-slate-950/80">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-slate-400 md:flex-row lg:px-10">
+          <p>© 2026 B/STech. Growth, simplified.</p>
+          <div className="flex gap-5">
+            <a href="#features" className="transition hover:text-white">Features</a>
+            <a href="#studio" className="transition hover:text-white">Studio</a>
+            <a href="#pricing" className="transition hover:text-white">Pricing</a>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}
