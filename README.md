@@ -110,3 +110,38 @@ http://localhost:3000
 /// <reference types="next/image-types/global" />
 
 // NOTE: This file should not be edited.
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #020817;
+  color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
