@@ -59,3 +59,9 @@ const nextConfig = {
 };
 
 export default nextConfig; 
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}; 
