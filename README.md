@@ -210,4 +210,242 @@ Best,
 The ${businessName} Team`,
   };
 }
+'use client';
 
+import { useEffect, useState } from 'react';
+import { generateMarketingContent } from '@/lib/generate-content';
+import type { CampaignForm, GeneratedCampaign } from '@/lib/types';
+
+const initialForm: CampaignForm = {
+  businessName: '',
+  description: '',
+  audience: '',
+  tone: 'friendly and persuasive',
+  platform: 'Instagram',
+  objective: 'increase leads and brand awareness',
+};
+
+const STORAGE_KEY = 'bstech_campaign_history';
+
+export default function MarketingStudio() {
+  const [form, setForm] = useState<CampaignForm>(initialForm);
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<GeneratedCampaign | null>(null);
+  const [history, setHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        setHistory(JSON.parse(saved));
+      } catch {
+        setHistory([]);
+      }
+    }
+  }, []);
+
+  const updateField = (field: keyof CampaignForm, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate campaign');
+      }
+
+      setResults(data);
+    } catch (error) {
+      const fallback = generateMarketingContent(form);
+      setResults(fallback);
+      console.error(error);
+    } finally {
+      setLoading(false);
+      const nextEntry = form.businessName || 'Recent campaign';
+      const nextHistory = [nextEntry, ...history].slice(0, 5);
+      setHistory(nextHistory);
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextHistory));
+    }
+  };
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-[28px] border border-slate-800 bg-slate-900 p-6 shadow-glow"
+      >
+        <div className="mb-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+            AI studio
+          </p>
+          <h2 className="mt-2 text-3xl font-black text-white">
+            Create your campaign brief
+          </h2>
+        </div>
+
+        <div className="space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">
+              Business name
+            </label>
+            <input
+              value={form.businessName}
+              onChange={(e) => updateField('businessName', e.target.value)}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              placeholder="Example: Peak Studio"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">
+              Business description
+            </label>
+            <textarea
+              value={form.description}
+              onChange={(e) => updateField('description', e.target.value)}
+              rows={4}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              placeholder="Describe the product or service you offer"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">
+              Target audience
+            </label>
+            <input
+              value={form.audience}
+              onChange={(e) => updateField('audience', e.target.value)}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              placeholder="Example: founders, local professionals"
+            />
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-200">
+                Tone
+              </label>
+              <select
+                value={form.tone}
+                onChange={(e) => updateField('tone', e.target.value)}
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              >
+                <option>friendly and persuasive</option>
+                <option>professional and premium</option>
+                <option>bold and energetic</option>
+                <option>trustworthy and practical</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-200">
+                Platform
+              </label>
+              <select
+                value={form.platform}
+                onChange={(e) => updateField('platform', e.target.value)}
+                className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              >
+                <option>Instagram</option>
+                <option>Facebook</option>
+                <option>Google Ads</option>
+                <option>Email</option>
+                <option>LinkedIn</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-200">
+              Campaign objective
+            </label>
+            <input
+              value={form.objective}
+              onChange={(e) => updateField('objective', e.target.value)}
+              className="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-btech-500"
+              placeholder="Example: increase leads and brand visibility"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-2 w-full rounded-2xl bg-btech-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-btech-400 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {loading ? 'Generating...' : 'Generate campaign'}
+          </button>
+        </div>
+      </form>
+
+      <div className="space-y-6">
+        <div className="rounded-[28px] border border-slate-800 bg-slate-900 p-6">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+            Recent campaigns
+          </p>
+          {history.length === 0 ? (
+            <p className="mt-4 text-slate-400">No campaigns saved yet.</p>
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {history.map((item, index) => (
+                <li
+                  key={`${item}-${index}`}
+                  className="rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-slate-200"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {results ? (
+          <>
+            <div className="rounded-[28px] border border-slate-800 bg-slate-900 p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+                Summary
+              </p>
+              <p className="mt-4 text-slate-200">{results.summary}</p>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-800 bg-slate-900 p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+                Social post
+              </p>
+              <pre className="mt-4 text-slate-200">{results.socialPost}</pre>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-800 bg-slate-900 p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+                Ad copy
+              </p>
+              <pre className="mt-4 text-slate-200">{results.adCopy}</pre>
+            </div>
+
+            <div className="rounded-[28px] border border-slate-800 bg-slate-900 p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-btech-200">
+                Email draft
+              </p>
+              <pre className="mt-4 text-slate-200">{results.emailDraft}</pre>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-[28px] border border-dashed border-slate-700 bg-slate-900/60 p-8 text-center text-slate-400">
+            Your generated content will appear here.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
