@@ -786,3 +786,46 @@ export async function createSupabaseServerClient() {
     }
   );
 }
+import { NextResponse } from "next/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20",
+});
+
+export async function POST() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return NextResponse.json({ error: "Sign in first." }, { status: 401 });
+  }
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const priceId = process.env.STRIPE_PRICE_ID;
+
+  if (!priceId) {
+    return NextResponse.json(
+      { error: "Stripe billing is not configured yet." },
+      { status: 500 }
+    );
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [{ price: priceId, quantity: 1 }],
+    customer_email: user.email || undefined,
+    client_reference_id: user.id,
+    success_url: `${appUrl}/dashboard?billing=success`,
+    cancel_url: `${appUrl}/pricing?billing=cancelled`,
+    metadata: {
+      userId: user.id,
+    },
+  });
+
+  return NextResponse.json({ url: session.url });
+}
